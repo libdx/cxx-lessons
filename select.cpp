@@ -4,7 +4,10 @@
 #include <vector>
 #include <set>
 
+// using namespace just for simplicity
 using namespace std;
+
+namespace Example {
 
 const char Delimiter = '|';
 
@@ -36,10 +39,14 @@ Entry create_entry(const string &str)
     return Entry{.id = id, .value = value};
 }
 
+}
+
 const string Text = "123|Belgrad";
 
 int main()
 {
+    using namespace Example;
+
     Entry e = create_entry(Text);
 
     cout << "id=" << e.id << endl;
