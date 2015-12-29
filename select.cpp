@@ -32,6 +32,8 @@ Entry create_entry(const string &str)
 {
     auto substrings = split_string(str, Delimiter);
 
+    // we might want to handle exeptions for stoi function
+    // in order to not crash if input data is corrupted
     int id = stoi(substrings[0]);
     string value = substrings[1];
 
@@ -52,23 +54,44 @@ vector<Entry> create_entries(const string &str)
     return entries;
 }
 
+vector<Entry> create_entries(ifstream &input)
+{
+    vector<Entry> entries;
+
+    string line;
+    while(getline(input, line)) {
+        Entry entry = create_entry(line);
+        entries.push_back(entry);
+    }
+
+    return entries;
+}
+
 }
 
 const string Text = "123|Belgrad\n42|Odessa";
+const string DataFilename = "data";
+
+void print_entries(const vector<Example::Entry> &entries)
+{
+    for (auto e: entries) {
+        cout << e.id << "|" << e.value << endl;
+    }
+}
 
 int main()
 {
     using namespace Example;
 
     vector<Entry> entries = create_entries(Text);
+    print_entries(entries);
 
-    for (auto e: entries) {
-        cout << "id=" << e.id << endl;
-        cout << "val=" << e.value << endl;
-    }
+    cout << endl;
+
+    ifstream input("data");
+    vector<Entry> entries_from_file = create_entries(input);
+    print_entries(entries_from_file);
 
     return 0;
 }
-
-
 
