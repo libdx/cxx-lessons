@@ -1,2 +1,2 @@
 all:
-	clang++ --std=c++11 -o x select.cpp
+	clang++ -g --std=c++11 -o x select.cpp

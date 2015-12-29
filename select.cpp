@@ -4,7 +4,7 @@
 #include <vector>
 #include <set>
 
-// using namespace just for simplicity
+// using namespace just for convenience in this example
 using namespace std;
 
 namespace Example {
@@ -22,7 +22,7 @@ vector<string> split_string(string str, char delimiter)
 
     vector<string> substrings;
     string substring;
-    while (getline(input, substring, Delimiter)) {
+    while (getline(input, substring, delimiter)) {
         substrings.push_back(substring);
     }
     return substrings;
@@ -39,18 +39,33 @@ Entry create_entry(const string &str)
     return Entry{.id = id, .value = value};
 }
 
+vector<Entry> create_entries(const string &str)
+{
+    auto lines = split_string(str, '\n');
+
+    vector<Entry> entries;
+    for (auto line: lines) {
+        Entry entry = create_entry(line);
+        entries.push_back(entry);
+    }
+
+    return entries;
 }
 
-const string Text = "123|Belgrad";
+}
+
+const string Text = "123|Belgrad\n42|Odessa";
 
 int main()
 {
     using namespace Example;
 
-    Entry e = create_entry(Text);
+    vector<Entry> entries = create_entries(Text);
 
-    cout << "id=" << e.id << endl;
-    cout << "val=" << e.value << endl;
+    for (auto e: entries) {
+        cout << "id=" << e.id << endl;
+        cout << "val=" << e.value << endl;
+    }
 
     return 0;
 }
