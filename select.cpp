@@ -16,6 +16,13 @@ struct Entry {
     string value;
 };
 
+// operator < is required by set
+bool operator < (const Entry &e1, const Entry &e2)
+{
+    return e1.id < e2.id;
+}
+
+
 vector<string> split_string(string str, char delimiter)
 {
     stringstream input(str);
@@ -41,6 +48,7 @@ Entry create_entry(const string &str)
     return Entry{.id = id, .value = value};
 }
 
+// this function works with string
 vector<Entry> create_entries(const string &str)
 {
     auto lines = split_string(str, '\n');
@@ -54,6 +62,7 @@ vector<Entry> create_entries(const string &str)
     return entries;
 }
 
+// this function works with input file stream
 vector<Entry> create_entries(ifstream &input)
 {
     vector<Entry> entries;
@@ -67,30 +76,58 @@ vector<Entry> create_entries(ifstream &input)
     return entries;
 }
 
-}
-
-const string Text = "123|Belgrad\n42|Odessa";
-const string DataFilename = "data";
-
-void print_entries(const vector<Example::Entry> &entries)
+void print_entries(const vector<Entry> &entries, const set<Entry> &selected)
 {
+    int i = 1;
     for (auto e: entries) {
-        cout << e.id << "|" << e.value << endl;
+        string prefix = selected.count(e) ? "* " : "  ";
+        cout << prefix << i << "." << " " << e.id << " | " << e.value << endl;
+        ++i;
     }
 }
+
+const string Prompt = ">";
+
+void run_ui(const vector<Entry> &entries)
+{
+    set<Entry> selected_entries;
+    while(true) {
+        print_entries(entries, selected_entries);
+
+        string command;
+        cout << Prompt << " ";
+        cin >> command;
+
+        if (command == "exit" ||
+            command == "quit")
+        {
+            break;
+        } else {
+            // TODO: check stoi for exeptions
+            int index = stoi(command) - 1;
+            Entry entry = entries[index];
+
+            if (selected_entries.count(entry)) {
+                selected_entries.erase(entry);
+            } else {
+                selected_entries.insert(entries[index]);
+            }
+        }
+    }
+}
+
+}
+
+const string DataFilename = "data";
 
 int main()
 {
     using namespace Example;
 
-    vector<Entry> entries = create_entries(Text);
-    print_entries(entries);
+    ifstream input(DataFilename);
+    vector<Entry> entries = create_entries(input);
 
-    cout << endl;
-
-    ifstream input("data");
-    vector<Entry> entries_from_file = create_entries(input);
-    print_entries(entries_from_file);
+    run_ui(entries);
 
     return 0;
 }
