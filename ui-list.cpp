@@ -81,7 +81,7 @@ void print_entries(const vector<Entry> &entries, const set<Entry> &selected)
     int i = 1;
     for (auto e: entries) {
         string prefix = selected.count(e) ? "* " : "  ";
-        cout << prefix << i << "." << " " << e.id << " | " << e.value << endl;
+        cout << prefix << i << "." << " " << e.value << endl;
         ++i;
     }
 }
